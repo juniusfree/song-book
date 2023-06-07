@@ -3,12 +3,22 @@ import { StructuredOutputParser } from "langchain/output_parsers";
 import { PromptTemplate } from "langchain/prompts";
 import { NextResponse } from "next/server";
 
-const model = new OpenAI({
-  openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-  temperature: 0,
-  modelName: "gpt-3.5-turbo",
-  verbose: true,
-});
+const createOpenAIModel = async (key: string) => {
+  const { data: openAIApiKey } = await fetch(
+    "http://localhost:3000/api/openAIAuthDecrypt",
+    {
+      method: "POST",
+      body: JSON.stringify({ encryptedData: key }),
+    }
+  ).then((res) => res.json());
+  const model = new OpenAI({
+    openAIApiKey,
+    temperature: 0,
+    modelName: "gpt-3.5-turbo",
+    verbose: true,
+  });
+  return model;
+};
 
 const identifyThemesPromptRawTemplate = `
     You will be given the details of a book.
@@ -36,6 +46,9 @@ const createThemesPromptTemplate = async ({
   description: string | { value: string };
   subjects: string[];
 }) => {
+  console.log("title", title);
+  console.log("description", description);
+  console.log("subjects", subjects);
   const descriptionValue =
     typeof description === "string" ? description : description.value;
   const prompt = await themesPromptTemplate
@@ -45,6 +58,7 @@ const createThemesPromptTemplate = async ({
       subjects,
     })
     .then((res) => res);
+  console.log("prompt", prompt);
   return prompt;
 };
 
@@ -77,7 +91,9 @@ const extractJson = (text: string) => {
 
 export async function POST(req: Request) {
   try {
-    const { title, description, subjects } = await req.json();
+    const { works, apiKey } = await req.json();
+    const { title, description, subjects } = works;
+    const model = await createOpenAIModel(apiKey).then((res) => res);
     const themePrompt = await createThemesPromptTemplate({
       title,
       description,

@@ -6,6 +6,9 @@ const Home = () => {
   const [spotifyTrack, setSpotifyTrack] = React.useState([]);
   const [searchInput, setSearchInput] = React.useState("");
   const [searchResult, setSearchResult] = React.useState([]);
+
+  const [openAIKey, setOpenAIKey] = React.useState("");
+
   const handleOnSearch = async () => {
     setSearchResult([]);
     setSpotifyTrack([]);
@@ -23,13 +26,29 @@ const Home = () => {
     }).then((res) => res.json());
     const langChainResponse = await fetch("api/langchain", {
       method: "POST",
-      body: JSON.stringify(works),
+      body: JSON.stringify({ works, apiKey: sessionStorage.getItem("openAI") }),
     }).then((res) => res.json());
     setSpotifyTrack(langChainResponse?.data?.tracks);
   };
   return (
     <div>
-      <p>Home</p>
+      <input
+        type="text"
+        value={openAIKey}
+        onChange={(e) => setOpenAIKey(e.target.value)}
+        className="w-full h-8"
+      />
+      <button
+        onClick={async () => {
+          const { data } = await fetch("api/openAIAuthEncrypt", {
+            method: "POST",
+            body: JSON.stringify({ apiKey: openAIKey }),
+          }).then((res) => res.json());
+          sessionStorage.setItem("openAI", data);
+        }}
+      >
+        Click me
+      </button>
       <input
         type="text"
         value={searchInput}
