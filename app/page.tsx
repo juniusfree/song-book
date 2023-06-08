@@ -43,7 +43,9 @@ const Home = () => {
           const { data } = await fetch("api/openAIAuthEncrypt", {
             method: "POST",
             body: JSON.stringify({ apiKey: openAIKey }),
-          }).then((res) => res.json());
+          })
+            .then((res) => res.json())
+            .catch((err) => console.log(err));
           sessionStorage.setItem("openAI", data);
         }}
       >
