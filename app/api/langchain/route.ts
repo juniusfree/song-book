@@ -22,8 +22,12 @@ const createOpenAIModel = async (key: string) => {
 
 const identifyThemesPromptRawTemplate = `
     You will be given the details of a book.
-    Generate 10 keywords in comma-separated list that match the book's plot, theme and tone based on the book's title: {title}, description: {description} and subjects: {subjects}.
-`;
+    Generate the top 10 concepts, in comma-separated list, that closely matches the book's plot, theme and tone.
+    The closest match will be the one with the closest semantic meaning. Not just string similarity.
+
+    book's title: {title}, description: {description} and subjects: {subjects}.
+
+    `;
 
 const parser = StructuredOutputParser.fromNamesAndDescriptions({
   genres:
