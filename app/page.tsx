@@ -2,6 +2,7 @@
 
 import MagnifyingGlassIcon from "@heroicons/react/20/solid/MagnifyingGlassIcon";
 import React from "react";
+import BookListComponent from "./components/bookList";
 
 const Home = () => {
   const [spotifyTrack, setSpotifyTrack] = React.useState([]);
@@ -34,8 +35,9 @@ const Home = () => {
     }).then((res) => res.json());
     setSpotifyTrack(langChainResponse?.data?.tracks);
   };
+
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       {/* <input
         type="text"
         value={openAIKey}
@@ -58,43 +60,35 @@ const Home = () => {
       <a href="http://localhost:3000/api/spotifyAuthorization" target="_blank">
         spotify
       </a> */}
-      <div className="flex flex-col w-full items-center justify-center gap-4 relative h-fit">
-        <div className="z-20 w-full flex flex-col">
-          <div className="w-full flex flex-col gap-1 h-56 bg-gradient-to-r from-white to-gray-300 justify-center p-5">
-            <p className="text-3xl font-bold">SongBook</p>
-            <p> Find songs that matches the mood of a book</p>
-          </div>
-          <div className="flex gap-2 outline outline-none w-full py-4 px-5 bg-white shadow items-center">
-            <button onClick={handleOnSearch}>
-              <MagnifyingGlassIcon className="w-5 h-5 text-gray-500" />
-            </button>
-            <input
-              type="text"
-              value={searchInput}
-              onChange={(e) => {
-                setSearchInput(e.target.value);
-              }}
-              className="w-full h-8 outline-none"
-              placeholder="Search for a book"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleOnSearch();
-                }
-              }}
-            />
-          </div>
+      <div className="z-20 w-full flex flex-col items-center justify-center  h-fit fixed">
+        <div className="w-full flex flex-col gap-1 h-48 bg-gradient-to-r from-white to-gray-300 justify-center p-5">
+          <p className="text-3xl font-bold">SongBook</p>
+          <p> Find songs that matches the mood of a book</p>
+        </div>
+        <div className="flex gap-2 outline outline-none w-full py-4 px-5 bg-white shadow items-center">
+          <button onClick={handleOnSearch}>
+            <MagnifyingGlassIcon className="w-5 h-5 text-gray-500" />
+          </button>
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => {
+              setSearchInput(e.target.value);
+            }}
+            className="w-full h-8 outline-none"
+            placeholder="Search for a book"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleOnSearch();
+              }
+            }}
+          />
         </div>
       </div>
 
-      <ul>
-        {searchResult?.map((doc: any) => {
-          return (
-            <li key={doc.key} onClick={() => handleSelectBook(doc.key)}>
-              <p>{doc.title}</p>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="pt-72">
+        <BookListComponent books={searchResult} />
+      </div>
       {spotifyTrack?.map(
         (track: { external_urls: { spotify: string }; name: string }) => {
           return (
