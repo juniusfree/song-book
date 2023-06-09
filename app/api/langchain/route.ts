@@ -95,9 +95,10 @@ const extractJson = (text: string) => {
 
 export async function POST(req: Request) {
   try {
-    const { works, apiKey } = await req.json();
+    const { works, openAIAccessToken, spotifyAccessToken } = await req.json();
+    const spotifyAuthorization = `Bearer ${spotifyAccessToken}`;
     const { title, description, subjects } = works;
-    const model = await createOpenAIModel(apiKey).then((res) => res);
+    const model = await createOpenAIModel(openAIAccessToken).then((res) => res);
     const themePrompt = await createThemesPromptTemplate({
       title,
       description,
@@ -106,7 +107,10 @@ export async function POST(req: Request) {
     const bookThemes = await model.call(themePrompt).then((res) => res);
 
     const spotifyGenreSeeds = await fetch(
-      "http://localhost:3000/api/spotifyGetAvailableGenreSeeds"
+      "http://localhost:3000/api/spotifyGetAvailableGenreSeeds",
+      {
+        headers: { authorization: spotifyAuthorization },
+      }
     ).then((res) => res.json());
     const genrePrompt = await identifyGenrePromptTemplate
       .format({
@@ -123,6 +127,7 @@ export async function POST(req: Request) {
         body: JSON.stringify({
           genres: JSON.parse(extractJson(songGenres))?.genres,
         }),
+        headers: { authorization: spotifyAuthorization },
       }
     ).then((res) => res.json());
     return NextResponse.json(spotifyRecommendations);

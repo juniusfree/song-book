@@ -26,7 +26,11 @@ const Home = () => {
     }).then((res) => res.json());
     const langChainResponse = await fetch("api/langchain", {
       method: "POST",
-      body: JSON.stringify({ works, apiKey: sessionStorage.getItem("openAI") }),
+      body: JSON.stringify({
+        works,
+        openAIAccessToken: sessionStorage.getItem("openAI"),
+        spotifyAccessToken: sessionStorage.getItem("spotify"),
+      }),
     }).then((res) => res.json());
     setSpotifyTrack(langChainResponse?.data?.tracks);
   };
@@ -51,6 +55,9 @@ const Home = () => {
       >
         Click me
       </button>
+      <a href="http://localhost:3000/api/spotifyAuthorization" target="_blank">
+        spotify
+      </a>
       <input
         type="text"
         value={searchInput}
