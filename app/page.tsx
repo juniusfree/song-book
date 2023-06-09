@@ -6,7 +6,6 @@ const Home = () => {
   const [spotifyTrack, setSpotifyTrack] = React.useState([]);
   const [searchInput, setSearchInput] = React.useState("");
   const [searchResult, setSearchResult] = React.useState([]);
-
   const [openAIKey, setOpenAIKey] = React.useState("");
 
   const handleOnSearch = async () => {
@@ -28,8 +27,8 @@ const Home = () => {
       method: "POST",
       body: JSON.stringify({
         works,
-        openAIAccessToken: sessionStorage.getItem("openAI"),
-        spotifyAccessToken: sessionStorage.getItem("spotify"),
+        openAIAccessToken: localStorage.getItem("openAI"),
+        spotifyAccessToken: localStorage.getItem("spotify"),
       }),
     }).then((res) => res.json());
     setSpotifyTrack(langChainResponse?.data?.tracks);
@@ -50,7 +49,7 @@ const Home = () => {
           })
             .then((res) => res.json())
             .catch((err) => console.log(err));
-          sessionStorage.setItem("openAI", data);
+          localStorage.setItem("openAI", data);
         }}
       >
         Click me

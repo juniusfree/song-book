@@ -1,16 +1,14 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const SpotifyAuthorizationTokenPage = () => {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const accessToken = searchParams.get("access_token");
   if (accessToken) {
-    sessionStorage.setItem("spotify", accessToken as string);
-    router.push("/");
+    localStorage.setItem("spotify", accessToken as string);
   }
-  router.push("/");
+  window.close();
 };
 
 export default SpotifyAuthorizationTokenPage;
