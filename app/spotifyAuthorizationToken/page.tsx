@@ -7,8 +7,9 @@ const SpotifyAuthorizationTokenPage = () => {
   const accessToken = searchParams.get("access_token");
   if (accessToken) {
     localStorage.setItem("spotify", accessToken as string);
+    return <div>Success!</div>;
   }
-  window.close();
+  return <div>Something went wrong!</div>;
 };
 
 export default SpotifyAuthorizationTokenPage;
