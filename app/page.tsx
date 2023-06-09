@@ -1,5 +1,6 @@
 "use client";
 
+import MagnifyingGlassIcon from "@heroicons/react/20/solid/MagnifyingGlassIcon";
 import React from "react";
 
 const Home = () => {
@@ -34,8 +35,8 @@ const Home = () => {
     setSpotifyTrack(langChainResponse?.data?.tracks);
   };
   return (
-    <div>
-      <input
+    <div className="w-full">
+      {/* <input
         type="text"
         value={openAIKey}
         onChange={(e) => setOpenAIKey(e.target.value)}
@@ -56,14 +57,35 @@ const Home = () => {
       </button>
       <a href="http://localhost:3000/api/spotifyAuthorization" target="_blank">
         spotify
-      </a>
-      <input
-        type="text"
-        value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
-        className="w-full h-8"
-      />
-      <button onClick={handleOnSearch}>Click me</button>
+      </a> */}
+      <div className="flex flex-col w-full items-center justify-center gap-4 relative h-fit">
+        <div className="z-20 w-full flex flex-col">
+          <div className="w-full flex flex-col gap-1 h-56 bg-gradient-to-r from-white to-gray-300 justify-center p-5">
+            <p className="text-3xl font-bold">SongBook</p>
+            <p> Find songs that matches the mood of a book</p>
+          </div>
+          <div className="flex gap-2 outline outline-none w-full py-4 px-5 bg-white shadow items-center">
+            <button onClick={handleOnSearch}>
+              <MagnifyingGlassIcon className="w-5 h-5 text-gray-500" />
+            </button>
+            <input
+              type="text"
+              value={searchInput}
+              onChange={(e) => {
+                setSearchInput(e.target.value);
+              }}
+              className="w-full h-8 outline-none"
+              placeholder="Search for a book"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleOnSearch();
+                }
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
       <ul>
         {searchResult?.map((doc: any) => {
           return (
@@ -73,7 +95,6 @@ const Home = () => {
           );
         })}
       </ul>
-      <hr />
       {spotifyTrack?.map(
         (track: { external_urls: { spotify: string }; name: string }) => {
           return (
