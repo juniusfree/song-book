@@ -20,35 +20,18 @@ const useShowAuth = () => {
 };
 
 const Home = () => {
-  const [spotifyTrack, setSpotifyTrack] = useState([]);
+  
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const { showAuth, setShowAuth } = useShowAuth();
 
   const handleOnSearch = async () => {
     setSearchResult([]);
-    setSpotifyTrack([]);
     const { data } = await fetch("api/openLibrarySearch", {
       method: "POST",
       body: JSON.stringify({ query: searchInput }),
     }).then((res) => res.json());
     setSearchResult(data);
-  };
-
-  const handleSelectBook = async (key: string) => {
-    const { data: works } = await fetch("api/openLibraryWorks", {
-      method: "POST",
-      body: JSON.stringify({ key }),
-    }).then((res) => res.json());
-    const langChainResponse = await fetch("api/langchain", {
-      method: "POST",
-      body: JSON.stringify({
-        works,
-        openAIAccessToken: localStorage.getItem("openAI"),
-        spotifyAccessToken: localStorage.getItem("spotify"),
-      }),
-    }).then((res) => res.json());
-    setSpotifyTrack(langChainResponse?.data?.tracks);
   };
 
   return (
@@ -113,17 +96,6 @@ const Home = () => {
       <div className="pt-72 ">
         {isAuthorized && <BookListComponent books={searchResult} />}
       </div>
-      {spotifyTrack?.map(
-        (track: { external_urls: { spotify: string }; name: string }) => {
-          return (
-            <div>
-              <a href={track?.external_urls?.spotify} target="_blank">
-                {track?.name}
-              </a>
-            </div>
-          );
-        }
-      )}
     </div>
   );
 };

@@ -18,7 +18,7 @@ const useOpenAIKey = () => {
         setOpenAIKey(key);
       });
     }
-  });
+  }, []);
   return { openAIKey, setOpenAIKey };
 };
 

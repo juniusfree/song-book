@@ -50,9 +50,6 @@ const createThemesPromptTemplate = async ({
   description: string | { value: string };
   subjects: string[];
 }) => {
-  console.log("title", title);
-  console.log("description", description);
-  console.log("subjects", subjects);
   const descriptionValue =
     typeof description === "string" ? description : description.value;
   const prompt = await themesPromptTemplate
@@ -62,7 +59,6 @@ const createThemesPromptTemplate = async ({
       subjects,
     })
     .then((res) => res);
-  console.log("prompt", prompt);
   return prompt;
 };
 
@@ -95,9 +91,18 @@ const extractJson = (text: string) => {
 
 export async function POST(req: Request) {
   try {
-    const { works, openAIAccessToken, spotifyAccessToken } = await req.json();
-    const spotifyAuthorization = `Bearer ${spotifyAccessToken}`;
+    const { worksKey, openAIAccessToken, spotifyAccessToken } =
+      await req.json();
+
+    const { data: works } = await fetch(
+      "http://localhost:3000/api/openLibraryWorks",
+      {
+        method: "POST",
+        body: JSON.stringify({ key: `works/${worksKey}` }),
+      }
+    ).then((res) => res.json());
     const { title, description, subjects } = works;
+
     const model = await createOpenAIModel(openAIAccessToken).then((res) => res);
     const themePrompt = await createThemesPromptTemplate({
       title,
@@ -106,6 +111,7 @@ export async function POST(req: Request) {
     }).then((res) => res);
     const bookThemes = await model.call(themePrompt).then((res) => res);
 
+    const spotifyAuthorization = `Bearer ${spotifyAccessToken}`;
     const spotifyGenreSeeds = await fetch(
       "http://localhost:3000/api/spotifyGetAvailableGenreSeeds",
       {
