@@ -23,7 +23,7 @@ const useShowAuth = () => {
 
 const useOpenLibrarySearch = (key?: string | null) => {
   const getOpenLibrarySearch = ([_url, key]: string[]) =>
-    fetch("api/openLibrarySearch", {
+    fetch("/api/openLibrarySearch", {
       method: "POST",
       body: JSON.stringify({ query: key }),
     })
@@ -31,7 +31,7 @@ const useOpenLibrarySearch = (key?: string | null) => {
       ?.then((res) => res.data);
 
   const { data, error, isLoading, mutate } = useSWR(
-    ["api/openLibrarySearch", key],
+    ["/api/openLibrarySearch", key],
     getOpenLibrarySearch
   );
   return { data, error, isLoading, mutate };

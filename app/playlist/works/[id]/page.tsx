@@ -17,7 +17,7 @@ const useSpotifyRecommendations = (key: string | null, count: number) => {
     string,
     string
   ]) =>
-    fetch("http://localhost:3000/api/langchain", {
+    fetch("/api/langchain", {
       method: "POST",
       body: JSON.stringify({
         worksKey: key,
@@ -29,7 +29,7 @@ const useSpotifyRecommendations = (key: string | null, count: number) => {
       ?.then((res) => res.data);
 
   const { data, error, isLoading, mutate } = useSWR(
-    ["api/langchain", key, count, openAIKey, spotifyKey],
+    ["/api/langchain", key, count, openAIKey, spotifyKey],
     getSpotifyRecommendations,
     {
       revalidateOnFocus: false,
@@ -40,7 +40,7 @@ const useSpotifyRecommendations = (key: string | null, count: number) => {
 
 const useOpenLibraryWorks = (key: string) => {
   const getOpenLibraryWorks = ([_url, key]: string[]) =>
-    fetch("http://localhost:3000/api/openLibraryWorks", {
+    fetch("/api/openLibraryWorks", {
       method: "POST",
       body: JSON.stringify({ key: `works/${key}` }),
     })
@@ -48,7 +48,7 @@ const useOpenLibraryWorks = (key: string) => {
       ?.then((res) => res.data);
 
   const { data, error, isLoading } = useSWR(
-    ["api/openLibraryWorks", key],
+    ["/api/openLibraryWorks", key],
     getOpenLibraryWorks,
     {
       revalidateOnFocus: false,

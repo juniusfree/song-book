@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const decryptOpenAIkey = async (encryptedData: string) => {
-  const { data } = await fetch("api/openAIAuthDecrypt", {
+  const { data } = await fetch("/api/openAIAuthDecrypt", {
     method: "POST",
     body: JSON.stringify({ encryptedData }),
   }).then((res) => res.json());
@@ -42,7 +42,7 @@ const OpenAiAuthorizationComponent = () => {
         disabled={!openAIKey}
         className={`w-80 rounded-full bg-gray-500 p-2 text-white text-center disabled:bg-gray-200`}
         onClick={async () => {
-          await fetch("api/openAIAuthEncrypt", {
+          await fetch("/api/openAIAuthEncrypt", {
             method: "POST",
             body: JSON.stringify({ apiKey: openAIKey }),
           })
@@ -68,7 +68,7 @@ const SpotifyAuthorizationButton = () => {
         Spotify Authorization
       </p>
       <div className="mx-auto w-80 rounded-full bg-green-500 p-2 text-white text-center">
-        <Link href="api/spotifyAuthorization" target="_blank">
+        <Link href="/api/spotifyAuthorization" target="_blank">
           {spotifyKey ? "Re-authorize" : "Authorize"} access to Spotify
         </Link>
       </div>
