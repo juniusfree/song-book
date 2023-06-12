@@ -10,24 +10,26 @@ import useSWR from "swr";
 
 const useSpotifyRecommendations = (key: string | null, count: number) => {
   const { openAIKey, spotifyKey } = useCheckIfAuthorized();
-  const getSpotifyRecommendations = ([_url, key, _count]: [
+  const getSpotifyRecommendations = ([_url, key, _count, openAI, spotify]: [
     string,
     string,
-    number
+    number,
+    string,
+    string
   ]) =>
     fetch("http://localhost:3000/api/langchain", {
       method: "POST",
       body: JSON.stringify({
         worksKey: key,
-        openAIAccessToken: openAIKey,
-        spotifyAccessToken: spotifyKey,
+        openAIAccessToken: openAI,
+        spotifyAccessToken: spotify,
       }),
     })
       .then((res) => res.json())
       ?.then((res) => res.data);
 
   const { data, error, isLoading, mutate } = useSWR(
-    ["api/langchain", key, count],
+    ["api/langchain", key, count, openAIKey, spotifyKey],
     getSpotifyRecommendations,
     {
       revalidateOnFocus: false,
@@ -140,7 +142,7 @@ const PlaylistPage = ({ params }: { params: { id: string } }) => {
               <p className="font-medium">
                 {isLoadingSpotifyRecommendations && "Loading the genres..."}
                 {!isLoadingSpotifyRecommendations &&
-                  !spotifyRecommendations.error &&
+                  !spotifyRecommendations?.error &&
                   genres}
                 {spotifyRecommendations?.error && "Something went wrong"}
               </p>
