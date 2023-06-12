@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import React from "react";
 
 type Book = {
   covers: number[];
@@ -58,4 +59,6 @@ const BookListComponent = ({
   );
 };
 
-export default BookListComponent;
+const BookListComponentMemoized = React.memo(BookListComponent);
+
+export default BookListComponentMemoized;

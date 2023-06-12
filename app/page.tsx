@@ -1,7 +1,7 @@
 "use client";
 
 import AuthorizationComponent from "@/app/components/authorization";
-import BookListComponent from "@/app/components/bookList";
+import BookListComponentMemoized from "@/app/components/bookList";
 import { useCheckIfAuthorized } from "@/app/hooks";
 import Cog6ToothIcon from "@heroicons/react/20/solid/Cog6ToothIcon";
 import MagnifyingGlassIcon from "@heroicons/react/20/solid/MagnifyingGlassIcon";
@@ -136,7 +136,10 @@ const Home = () => {
           </p>
         )}
         {isAuthorized && (
-          <BookListComponent books={data} searchValue={searchInput} />
+          <BookListComponentMemoized
+            books={data}
+            searchValue={openLibrarySearch}
+          />
         )}
       </div>
     </div>
