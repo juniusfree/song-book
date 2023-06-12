@@ -5,7 +5,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: "SongBook",
-  description: "Find music that matches the mood of a book",
+  description: "Find songs that match the mood of a book",
 };
 
 export default function RootLayout({

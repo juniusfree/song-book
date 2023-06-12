@@ -5,6 +5,7 @@ import BookListComponentMemoized from "@/app/components/bookList";
 import { useCheckIfAuthorized } from "@/app/hooks";
 import Cog6ToothIcon from "@heroicons/react/20/solid/Cog6ToothIcon";
 import MagnifyingGlassIcon from "@heroicons/react/20/solid/MagnifyingGlassIcon";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -79,7 +80,17 @@ const Home = () => {
         <div className="w-full flex flex-col gap-1 h-48 bg-gradient-to-r from-white to-gray-300 justify-between p-5">
           <div className="flex flex-col justify-center flex-grow">
             <p className="text-3xl font-bold">SongBook</p>
-            <p> Find songs that matches the mood of a book</p>
+            <p>Find songs that match the mood of a book.</p>
+            <p className="text-sm text-gray-700 pt-2">
+              by{" "}
+              <Link
+                href="https://github.com/juniusfree"
+                className="underline"
+                target="_blank"
+              >
+                @juniusfree
+              </Link>
+            </p>
           </div>
           <button
             className="flex items-center text-xs self-end justify-end gap-1 font-medium uppercase text-gray-500 rounded-full"
