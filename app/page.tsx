@@ -91,8 +91,8 @@ const Home = () => {
         </div>
 
         <div
-          className={`flex gap-2 outline outline-none w-full py-4 px-5 bg-white shadow items-center ${
-            !isAuthorized && "bg-gray-100"
+          className={`flex gap-2 outline outline-none w-full py-4 px-5 shadow items-center ${
+            isAuthorized ? "bg-white" : "bg-gray-200"
           }`}
         >
           <button onClick={handleOnSearch}>
@@ -103,7 +103,7 @@ const Home = () => {
             type="text"
             value={searchInput || ""}
             onChange={handleSearchInputChange}
-            className={`w-full h-8 outline-none disabled:bg-gray-100`}
+            className={`w-full h-8 outline-none disabled:bg-gray-200`}
             placeholder={
               isAuthorized
                 ? "Search for a book ie. Sherlock Holmes"
