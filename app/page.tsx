@@ -2,6 +2,7 @@
 
 import Cog6ToothIcon from "@heroicons/react/20/solid/Cog6ToothIcon";
 import MagnifyingGlassIcon from "@heroicons/react/20/solid/MagnifyingGlassIcon";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import AuthorizationComponent from "./components/authorization";
@@ -38,9 +39,12 @@ const useOpenLibrarySearch = (key?: string | null) => {
 
 const Home = () => {
   const { showAuth, setShowAuth } = useShowAuth();
-
-  const [searchInput, setSearchInput] = useState<string | null>();
-  const [openLibrarySearch, setOpenLibrarySearch] = useState<string | null>();
+  const searchParams = useSearchParams();
+  const searchValue = searchParams.get("searchValue");
+  const [searchInput, setSearchInput] = useState<string | null>(searchValue);
+  const [openLibrarySearch, setOpenLibrarySearch] = useState<string | null>(
+    searchValue ?? ""
+  );
   const { data, isLoading } = useOpenLibrarySearch(openLibrarySearch);
   const [showNoResult, setShowNoResult] = useState(false);
 
@@ -130,7 +134,9 @@ const Home = () => {
             Search results will appear here
           </p>
         )}
-        {isAuthorized && <BookListComponent books={data} />}
+        {isAuthorized && (
+          <BookListComponent books={data} searchValue={searchInput} />
+        )}
       </div>
     </div>
   );

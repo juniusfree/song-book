@@ -8,7 +8,13 @@ type Book = {
   description: { value: string } | string;
 };
 
-const BookListComponent = ({ books }: { books: Book[] }) => {
+const BookListComponent = ({
+  books,
+  searchValue,
+}: {
+  books: Book[];
+  searchValue?: string | null;
+}) => {
   return (
     <ul>
       {books?.map((doc: Book, index: number) => {
@@ -17,7 +23,7 @@ const BookListComponent = ({ books }: { books: Book[] }) => {
           typeof description === "object" ? description?.value : description;
         const cover = covers?.[0];
         return (
-          <Link href={`/playlist/${key}`}>
+          <Link href={`/playlist/${key}?searchValue=${searchValue}`}>
             <li
               key={key}
               className="flex items-center gap-4 px-5 py-12 h-12 hover:bg-gray-100 cursor-pointer"
