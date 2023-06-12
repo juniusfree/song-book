@@ -1,8 +1,9 @@
+import { useCheckIfAuthorized } from "@/app/utils";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const decryptOpenAIkey = async (encryptedData: string) => {
-  const { data } = await fetch("http://localhost:3000/api/openAIAuthDecrypt", {
+  const { data } = await fetch("api/openAIAuthDecrypt", {
     method: "POST",
     body: JSON.stringify({ encryptedData }),
   }).then((res) => res.json());
@@ -11,14 +12,14 @@ const decryptOpenAIkey = async (encryptedData: string) => {
 
 const useOpenAIKey = () => {
   const [openAIKey, setOpenAIKey] = useState("");
+  const { openAIKey: localStorageOpenAIKey } = useCheckIfAuthorized();
   useEffect(() => {
-    const openAIKey = localStorage.getItem("openAI");
-    if (openAIKey) {
-      decryptOpenAIkey(openAIKey).then((key) => {
+    if (localStorageOpenAIKey) {
+      decryptOpenAIkey(localStorageOpenAIKey).then((key) => {
         setOpenAIKey(key);
       });
     }
-  }, []);
+  }, [localStorageOpenAIKey]);
   return { openAIKey, setOpenAIKey };
 };
 
@@ -60,7 +61,7 @@ const OpenAiAuthorizationComponent = () => {
 };
 
 const SpotifyAuthorizationButton = () => {
-  const spotify = localStorage.getItem("spotify");
+  const { spotifyKey } = useCheckIfAuthorized();
   return (
     <div className="flex flex-col gap-4 items-center">
       <p className="text-sm font-bold uppercase text-gray-500">
@@ -68,7 +69,7 @@ const SpotifyAuthorizationButton = () => {
       </p>
       <div className="mx-auto w-80 rounded-full bg-green-500 p-2 text-white text-center">
         <Link href="api/spotifyAuthorization" target="_blank">
-          {spotify ? "Re-authorize" : "Authorize"} access to Spotify
+          {spotifyKey ? "Re-authorize" : "Authorize"} access to Spotify
         </Link>
       </div>
     </div>

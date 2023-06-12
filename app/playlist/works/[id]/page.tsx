@@ -1,5 +1,6 @@
 "use client";
 
+import { useCheckIfAuthorized } from "@/app/utils";
 import ArrowLeftIcon from "@heroicons/react/20/solid/ArrowLeftIcon";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,10 +8,8 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
 
-const openAIAccessToken = localStorage.getItem("openAI");
-const spotifyAccessToken = localStorage.getItem("spotify");
-
 const useSpotifyRecommendations = (key: string | null, count: number) => {
+  const { openAIKey, spotifyKey } = useCheckIfAuthorized();
   const getSpotifyRecommendations = ([_url, key, _count]: [
     string,
     string,
@@ -20,8 +19,8 @@ const useSpotifyRecommendations = (key: string | null, count: number) => {
       method: "POST",
       body: JSON.stringify({
         worksKey: key,
-        openAIAccessToken,
-        spotifyAccessToken,
+        openAIAccessToken: openAIKey,
+        spotifyAccessToken: spotifyKey,
       }),
     })
       .then((res) => res.json())

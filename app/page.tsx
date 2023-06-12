@@ -1,32 +1,22 @@
 "use client";
 
+import AuthorizationComponent from "@/app/components/authorization";
+import BookListComponent from "@/app/components/bookList";
+import { useCheckIfAuthorized } from "@/app/utils";
 import Cog6ToothIcon from "@heroicons/react/20/solid/Cog6ToothIcon";
 import MagnifyingGlassIcon from "@heroicons/react/20/solid/MagnifyingGlassIcon";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import AuthorizationComponent from "./components/authorization";
-import BookListComponent from "./components/bookList";
-
-
-const useCheckIfAuthorized = () => {
-  const [isAuthorized, setIsAuthorized] = useState(false);
-  useEffect(() => {
-    if (localStorage.getItem("openAI") && localStorage.getItem("spotify")) {
-      setIsAuthorized(true);
-    }
-    setIsAuthorized(false);
-  }, []);
-  return isAuthorized;
-};
 
 const useShowAuth = () => {
   const [showAuth, setShowAuth] = useState(false);
-  const isAuthorized = useCheckIfAuthorized();
+  const { isAuthorized } = useCheckIfAuthorized();
   useEffect(() => {
     if (!isAuthorized) {
       setShowAuth(true);
     }
+    setShowAuth(false);
   }, []);
   return { showAuth, setShowAuth };
 };
@@ -48,7 +38,7 @@ const useOpenLibrarySearch = (key?: string | null) => {
 };
 
 const Home = () => {
-  const isAuthorized = useCheckIfAuthorized();
+  const { isAuthorized } = useCheckIfAuthorized();
   const { showAuth, setShowAuth } = useShowAuth();
   const searchParams = useSearchParams();
   const searchValue = searchParams.get("searchValue");
