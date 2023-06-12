@@ -8,11 +8,21 @@ import useSWR from "swr";
 import AuthorizationComponent from "./components/authorization";
 import BookListComponent from "./components/bookList";
 
-const isAuthorized =
-  localStorage.getItem("openAI") && localStorage.getItem("spotify");
+
+const useCheckIfAuthorized = () => {
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  useEffect(() => {
+    if (localStorage.getItem("openAI") && localStorage.getItem("spotify")) {
+      setIsAuthorized(true);
+    }
+    setIsAuthorized(false);
+  }, []);
+  return isAuthorized;
+};
 
 const useShowAuth = () => {
   const [showAuth, setShowAuth] = useState(false);
+  const isAuthorized = useCheckIfAuthorized();
   useEffect(() => {
     if (!isAuthorized) {
       setShowAuth(true);
@@ -38,6 +48,7 @@ const useOpenLibrarySearch = (key?: string | null) => {
 };
 
 const Home = () => {
+  const isAuthorized = useCheckIfAuthorized();
   const { showAuth, setShowAuth } = useShowAuth();
   const searchParams = useSearchParams();
   const searchValue = searchParams.get("searchValue");
