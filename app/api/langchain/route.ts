@@ -4,13 +4,10 @@ import { PromptTemplate } from "langchain/prompts";
 import { NextResponse } from "next/server";
 
 const createOpenAIModel = async (key: string) => {
-  const { data: openAIApiKey } = await fetch(
-    "http://localhost:3000/api/openAIAuthDecrypt",
-    {
-      method: "POST",
-      body: JSON.stringify({ encryptedData: key }),
-    }
-  ).then((res) => res.json());
+  const { data: openAIApiKey } = await fetch("/api/openAIAuthDecrypt", {
+    method: "POST",
+    body: JSON.stringify({ encryptedData: key }),
+  }).then((res) => res.json());
   const model = new OpenAI({
     openAIApiKey,
     temperature: 0,
@@ -94,13 +91,10 @@ export async function POST(req: Request) {
     const { worksKey, openAIAccessToken, spotifyAccessToken } =
       await req.json();
 
-    const { data: works } = await fetch(
-      "http://localhost:3000/api/openLibraryWorks",
-      {
-        method: "POST",
-        body: JSON.stringify({ key: `works/${worksKey}` }),
-      }
-    ).then((res) => res.json());
+    const { data: works } = await fetch("/api/openLibraryWorks", {
+      method: "POST",
+      body: JSON.stringify({ key: `works/${worksKey}` }),
+    }).then((res) => res.json());
     const { title, description, subjects } = works;
 
     const model = await createOpenAIModel(openAIAccessToken).then((res) => res);
@@ -113,7 +107,7 @@ export async function POST(req: Request) {
 
     const spotifyAuthorization = `Bearer ${spotifyAccessToken}`;
     const spotifyGenreSeeds = await fetch(
-      "http://localhost:3000/api/spotifyGetAvailableGenreSeeds",
+      "/api/spotifyGetAvailableGenreSeeds",
       {
         headers: { authorization: spotifyAuthorization },
       }
@@ -127,7 +121,7 @@ export async function POST(req: Request) {
     const songGenres = await model.call(genrePrompt).then((res) => res);
 
     const spotifyRecommendations = await fetch(
-      "http://localhost:3000/api/spotifyGetRecommendations",
+      "/api/spotifyGetRecommendations",
       {
         method: "POST",
         body: JSON.stringify({

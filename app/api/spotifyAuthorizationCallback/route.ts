@@ -6,12 +6,16 @@ export async function GET(req: NextRequest) {
   const state = req.nextUrl.searchParams.getAll("state");
   const clientId = process.env.SPOTIFY_CLIENT_ID;
   const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
-  const redirectUri = "http://localhost:3000/api/spotifyAuthorizationCallback";
+  const rootURL =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "https://juniusfree-song-book.vercel.app";
+  const redirectUri = rootURL + "/api/spotifyAuthorizationCallback";
+  console.log("redirectUri", redirectUri);
 
   if (state === null) {
     return NextResponse.redirect(
-      "http://localhost:3000/" +
-        querystring.stringify({ error: "state_mismatch" })
+      "/" + querystring.stringify({ error: "state_mismatch" })
     );
   }
 
@@ -39,7 +43,8 @@ export async function GET(req: NextRequest) {
 
   const data = await response.json();
   const url = new URL(
-    "http://localhost:3000/spotifyAuthorizationToken?" +
+    rootURL +
+      "/spotifyAuthorizationToken?" +
       querystring.stringify({ access_token: data.access_token })
   );
 
