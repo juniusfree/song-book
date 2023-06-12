@@ -123,13 +123,13 @@ const Home = () => {
             Loading...
           </p>
         )}
-        {!isLoading && data.length === 0 && showNoResult && (
+        {!isLoading && data?.length === 0 && showNoResult && (
           <p className="h-full w-full flex items-center justify-center font-medium text-gray-400">
             Cannot find any details of{" "}
             <span className="italic font-bold">{searchInput}</span>
           </p>
         )}
-        {!isLoading && data.length === 0 && !showNoResult && (
+        {!isLoading && data?.length === 0 && !showNoResult && (
           <p className="h-full w-full flex items-center justify-center font-medium text-gray-400">
             Search results will appear here
           </p>
