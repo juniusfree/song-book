@@ -1,69 +1,46 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useSWR from "swr";
 
 const openAIAccessToken = localStorage.getItem("openAI");
 const spotifyAccessToken = localStorage.getItem("spotify");
 
-const getSpotifyRecommendations = async (key: string) => {
-  const { data } = await fetch("http://localhost:3000/api/langchain", {
-    method: "POST",
-    body: JSON.stringify({
-      worksKey: key,
-      openAIAccessToken,
-      spotifyAccessToken,
-    }),
-  }).then((res) => res.json());
-  return data;
-};
-
 const useSpotifyRecommendations = (key: string) => {
-  const [spotifyRecommendations, setSpotifyRecommendations] = useState({
-    tracks: [],
-    seeds: [],
-  });
-
-  const handleGetSpotifyRecommendations = async () => {
-    const { data } = await fetch("http://localhost:3000/api/langchain", {
+  const getSpotifyRecommendations = ([_url, key]: string[]) =>
+    fetch("http://localhost:3000/api/langchain", {
       method: "POST",
       body: JSON.stringify({
         worksKey: key,
         openAIAccessToken,
         spotifyAccessToken,
       }),
-    }).then((res) => res.json());
-    setSpotifyRecommendations(data);
-  };
+    })
+      .then((res) => res.json())
+      ?.then((res) => res.data);
 
-  useEffect(() => {
-    handleGetSpotifyRecommendations();
-  }, [key]);
-
-  return { spotifyRecommendations, handleGetSpotifyRecommendations };
-};
-
-const getOpenLibraryWorks = async (key: string) => {
-  const { data: works } = await fetch(
-    "http://localhost:3000/api/openLibraryWorks",
-    {
-      method: "POST",
-      body: JSON.stringify({ key: `works/${key}` }),
-    }
-  ).then((res) => res.json());
-  return works;
+  const { data, error, isLoading, mutate } = useSWR(
+    ["api/langchain", key],
+    getSpotifyRecommendations
+  );
+  return { data, error, isLoading, mutate };
 };
 
 const useOpenLibraryWorks = (key: string) => {
-  const [openLibraryWorks, setOpenLibraryWorks] = useState();
+  const getOpenLibraryWorks = ([_url, key]: string[]) =>
+    fetch("http://localhost:3000/api/openLibraryWorks", {
+      method: "POST",
+      body: JSON.stringify({ key: `works/${key}` }),
+    })
+      .then((res) => res.json())
+      ?.then((res) => res.data);
 
-  useEffect(() => {
-    getOpenLibraryWorks(key).then((works) => {
-      setOpenLibraryWorks(works);
-    });
-  }, [key]);
-
-  return openLibraryWorks;
+  const { data, error, isLoading } = useSWR(
+    ["api/openLibraryWorks", key],
+    getOpenLibraryWorks
+  );
+  return { data, error, isLoading };
 };
 
 type Track = {
@@ -74,18 +51,28 @@ type Track = {
 };
 
 const PlaylistPage = ({ params }: { params: { id: string } }) => {
-  const openLibraryWorks = useOpenLibraryWorks(params.id);
-  const { covers, title, key, description, subtitle } = openLibraryWorks ?? {};
+  const { data, error, isLoading } = useOpenLibraryWorks(params.id);
+
+  const { covers, title, key, description, subtitle } = data ?? {};
   const descriptionValue =
     typeof description === "object" ? description?.value : description;
   const cover = covers?.[0];
 
-  const { spotifyRecommendations, handleGetSpotifyRecommendations } =
-    useSpotifyRecommendations(params.id);
-  const { tracks, seeds } = spotifyRecommendations;
-  const genres = seeds.map(({ id }) => id).join(", ");
+  const {
+    data: spotifyRecommendations,
+    mutate: handleGetSpotifyRecommendations,
+    isLoading: isLoadingSpotifyRecommendations,
+  } = useSpotifyRecommendations(params.id);
+  console.log(
+    "isLoadingSpotifyRecommendations",
+    isLoadingSpotifyRecommendations
+  );
+  const { tracks, seeds } = spotifyRecommendations ?? {};
+  const genres = seeds?.map(({ id }: { id: string }) => id).join(", ");
 
   const [showMoreDescription, setShowMoreDescription] = useState(false);
+
+  if (isLoading) return null;
 
   return (
     <div className="relative">
@@ -129,7 +116,11 @@ const PlaylistPage = ({ params }: { params: { id: string } }) => {
           </div>
           <div className="flex gap-4 text-sm">
             <p className="text-gray-500">Genres</p>
-            <p className="font-medium">{genres}</p>
+            <p className="font-medium">
+              {isLoadingSpotifyRecommendations
+                ? "Loading the genres..."
+                : genres}
+            </p>
           </div>
           <button
             onClick={handleGetSpotifyRecommendations}
@@ -139,8 +130,12 @@ const PlaylistPage = ({ params }: { params: { id: string } }) => {
           </button>
         </div>
       </div>
+
       <div className="flex flex-col gap-2 pt-96 p-5">
-        {tracks?.map((track: Track, index) => {
+        {isLoadingSpotifyRecommendations && (
+          <p className="text-2xl text-black">Loading</p>
+        )}
+        {tracks?.map((track: Track, index: number) => {
           const { external_urls, name, artists, album } = track;
           const albumCover = album.images[2]?.url;
           return (

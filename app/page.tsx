@@ -3,6 +3,7 @@
 import Cog6ToothIcon from "@heroicons/react/20/solid/Cog6ToothIcon";
 import MagnifyingGlassIcon from "@heroicons/react/20/solid/MagnifyingGlassIcon";
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 import AuthorizationComponent from "./components/authorization";
 import BookListComponent from "./components/bookList";
 
@@ -19,19 +20,38 @@ const useShowAuth = () => {
   return { showAuth, setShowAuth };
 };
 
+const useOpenLibrarySearch = (key?: string | null) => {
+  const getOpenLibrarySearch = ([_url, key]: string[]) =>
+    fetch("api/openLibrarySearch", {
+      method: "POST",
+      body: JSON.stringify({ query: key }),
+    })
+      .then((res) => res.json())
+      ?.then((res) => res.data);
+
+  const { data, error, isLoading, mutate } = useSWR(
+    ["api/openLibrarySearch", key],
+    getOpenLibrarySearch
+  );
+  return { data, error, isLoading, mutate };
+};
+
 const Home = () => {
-  
-  const [searchInput, setSearchInput] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
   const { showAuth, setShowAuth } = useShowAuth();
 
+  const [searchInput, setSearchInput] = useState<string | null>();
+  const [openLibrarySearch, setOpenLibrarySearch] = useState<string | null>();
+  const { data, isLoading } = useOpenLibrarySearch(openLibrarySearch);
+  const [showNoResult, setShowNoResult] = useState(false);
+
   const handleOnSearch = async () => {
-    setSearchResult([]);
-    const { data } = await fetch("api/openLibrarySearch", {
-      method: "POST",
-      body: JSON.stringify({ query: searchInput }),
-    }).then((res) => res.json());
-    setSearchResult(data);
+    setShowNoResult(true);
+    setOpenLibrarySearch(searchInput);
+  };
+
+  const handleSearchInputChange = (e: any) => {
+    setShowNoResult(false);
+    setSearchInput(e.target.value);
   };
 
   return (
@@ -76,13 +96,13 @@ const Home = () => {
           <input
             disabled={!isAuthorized}
             type="text"
-            value={searchInput}
-            onChange={(e) => {
-              setSearchInput(e.target.value);
-            }}
+            value={searchInput || ""}
+            onChange={handleSearchInputChange}
             className={`w-full h-8 outline-none disabled:bg-gray-100`}
             placeholder={
-              isAuthorized ? "Search for a book" : "Authorize to search"
+              isAuthorized
+                ? "Search for a book ie. Sherlock Holmes"
+                : "Authorize to search"
             }
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -94,7 +114,23 @@ const Home = () => {
       </div>
 
       <div className="pt-72 ">
-        {isAuthorized && <BookListComponent books={searchResult} />}
+        {isLoading && (
+          <p className="h-full w-full flex items-center justify-center font-medium text-gray-400">
+            Loading...
+          </p>
+        )}
+        {!isLoading && data.length === 0 && showNoResult && (
+          <p className="h-full w-full flex items-center justify-center font-medium text-gray-400">
+            Cannot find any details of{" "}
+            <span className="italic font-bold">{searchInput}</span>
+          </p>
+        )}
+        {!isLoading && data.length === 0 && !showNoResult && (
+          <p className="h-full w-full flex items-center justify-center font-medium text-gray-400">
+            Search results will appear here
+          </p>
+        )}
+        {isAuthorized && <BookListComponent books={data} />}
       </div>
     </div>
   );
