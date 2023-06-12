@@ -2,7 +2,7 @@
 
 import AuthorizationComponent from "@/app/components/authorization";
 import BookListComponent from "@/app/components/bookList";
-import { useCheckIfAuthorized } from "@/app/utils";
+import { useCheckIfAuthorized } from "@/app/hooks";
 import Cog6ToothIcon from "@heroicons/react/20/solid/Cog6ToothIcon";
 import MagnifyingGlassIcon from "@heroicons/react/20/solid/MagnifyingGlassIcon";
 import { useSearchParams } from "next/navigation";

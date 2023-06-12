@@ -1,6 +1,6 @@
 "use client";
 
-import { useCheckIfAuthorized } from "@/app/utils";
+import { useCheckIfAuthorized } from "@/app/hooks";
 import ArrowLeftIcon from "@heroicons/react/20/solid/ArrowLeftIcon";
 import Image from "next/image";
 import Link from "next/link";

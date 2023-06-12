@@ -1,13 +1,10 @@
+import { rootURL } from "@/app/utils";
 import { randomUUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import querystring from "querystring";
 
 export async function GET(req: NextRequest) {
   const clientId = process.env.SPOTIFY_CLIENT_ID;
-  const rootURL =
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:3000"
-      : "https://juniusfree-song-book.vercel.app";
   const redirectUri = rootURL + `/api/spotifyAuthorizationCallback`;
   console.log("redirectUri", redirectUri);
   const state = randomUUID();

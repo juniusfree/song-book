@@ -1,4 +1,4 @@
-import { useCheckIfAuthorized } from "@/app/utils";
+import { useCheckIfAuthorized } from "@/app/hooks";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 

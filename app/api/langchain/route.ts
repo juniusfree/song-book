@@ -2,12 +2,16 @@ import { OpenAI } from "langchain/llms/openai";
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { PromptTemplate } from "langchain/prompts";
 import { NextResponse } from "next/server";
+import { rootURL } from "@/app/utils";
 
 const createOpenAIModel = async (key: string) => {
-  const { data: openAIApiKey } = await fetch("/api/openAIAuthDecrypt", {
-    method: "POST",
-    body: JSON.stringify({ encryptedData: key }),
-  }).then((res) => res.json());
+  const { data: openAIApiKey } = await fetch(
+    `${rootURL}/api/openAIAuthDecrypt`,
+    {
+      method: "POST",
+      body: JSON.stringify({ encryptedData: key }),
+    }
+  ).then((res) => res.json());
   const model = new OpenAI({
     openAIApiKey,
     temperature: 0,
@@ -91,7 +95,7 @@ export async function POST(req: Request) {
     const { worksKey, openAIAccessToken, spotifyAccessToken } =
       await req.json();
 
-    const { data: works } = await fetch("/api/openLibraryWorks", {
+    const { data: works } = await fetch(`${rootURL}/api/openLibraryWorks`, {
       method: "POST",
       body: JSON.stringify({ key: `works/${worksKey}` }),
     }).then((res) => res.json());
@@ -107,7 +111,7 @@ export async function POST(req: Request) {
 
     const spotifyAuthorization = `Bearer ${spotifyAccessToken}`;
     const spotifyGenreSeeds = await fetch(
-      "/api/spotifyGetAvailableGenreSeeds",
+      `${rootURL}/api/spotifyGetAvailableGenreSeeds`,
       {
         headers: { authorization: spotifyAuthorization },
       }
@@ -121,7 +125,7 @@ export async function POST(req: Request) {
     const songGenres = await model.call(genrePrompt).then((res) => res);
 
     const spotifyRecommendations = await fetch(
-      "/api/spotifyGetRecommendations",
+      `${rootURL}/api/spotifyGetRecommendations`,
       {
         method: "POST",
         body: JSON.stringify({
