@@ -13,5 +13,7 @@ https://github.com/juniusfree/song-book/assets/8164667/13d63479-6f39-4d12-86ef-4
 
 - React
 - Next.js
+- Tailwind CSS
+- TypeScript
 - Langchain JS
 - APIs: Open Library and Spotify
