@@ -176,7 +176,7 @@ const PlaylistPage = ({ params }: { params: { id: string } }) => {
             const { external_urls, name, artists, album } = track;
             const albumCover = album.images[2]?.url;
             return (
-              <div>
+              <div key={artists + name + album.name}>
                 <a
                   href={external_urls?.spotify}
                   target="_blank"
