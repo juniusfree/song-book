@@ -168,7 +168,7 @@ const PlaylistPage = ({ params }: { params: { id: string } }) => {
               Cannot find any tracks of{" "}
               <span className="italic font-bold">{title}</span>
             </p>
-            <p>Please check if Spotify authorization works.</p>
+            <p>Please check if OpenAI and Spotify keys are set.</p>
           </div>
         )}
         {!isLoading &&

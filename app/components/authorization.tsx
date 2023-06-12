@@ -67,10 +67,7 @@ const SpotifyAuthorizationButton = () => {
         Spotify Authorization
       </p>
       <div className="mx-auto w-80 rounded-full bg-green-500 p-2 text-white text-center">
-        <Link
-          href="http://localhost:3000/api/spotifyAuthorization"
-          target="_blank"
-        >
+        <Link href="api/spotifyAuthorization" target="_blank">
           {spotify ? "Re-authorize" : "Authorize"} access to Spotify
         </Link>
       </div>
