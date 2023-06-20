@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
+import { TrackListComponent } from "./trackList";
 
 const useSpotifyRecommendations = (key: string | null, count: number) => {
   const { openAIKey, spotifyKey } = useCheckIfAuthorized();
@@ -170,50 +171,7 @@ const PlaylistPage = ({ params }: { params: { id: string } }) => {
             <p>Please check if OpenAI and Spotify keys are set.</p>
           </div>
         )}
-        {!isLoading &&
-          tracks?.map((track: Track, index: number) => {
-            const { external_urls, name, artists, album } = track;
-            const albumCover = album.images[2]?.url;
-            return (
-              <div key={artists + name + album.name}>
-                <a
-                  href={external_urls?.spotify}
-                  target="_blank"
-                  className="flex items-center gap-4 w-full hover:bg-gray-100 p-2 rounded group/track"
-                >
-                  <p className="w-4 text-gray-500">{index + 1}</p>
-                  <div className="h-12 w-12">
-                    {albumCover ? (
-                      <Image
-                        src={album.images[2]?.url}
-                        width={64}
-                        height={64}
-                        alt={`${album.name}`}
-                      />
-                    ) : (
-                      <div className="w-12 h-12 bg-gray-200 flex items-center justify-center text-xs text-center py-2 text-gray-500">
-                        No Cover Image
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-sm w-5/12">
-                    <p className="font-semibold">{name}</p>
-                    <p className="text-gray-500 text-sm">
-                      {artists.map(({ name }) => name).join(", ")}
-                    </p>
-                  </div>
-                  <div className="text-sm text-gray-500 w-2/12">
-                    {album.name}
-                  </div>
-                  <div className="flex-grow flex justify-end items-center">
-                    <button className="bg-green-500 text-xs rounded-full p-2 text-white font-medium uppercase hidden group-hover/track:block">
-                      Play on Spotify
-                    </button>
-                  </div>
-                </a>
-              </div>
-            );
-          })}
+        {!isLoading && <TrackListComponent tracks={tracks} />}
       </div>
     </div>
   );
