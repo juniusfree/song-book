@@ -57,13 +57,6 @@ const useOpenLibraryWorks = (key: string) => {
   return { data, error, isLoading };
 };
 
-type Track = {
-  external_urls: { spotify: string };
-  name: string;
-  artists: { name: string }[];
-  album: { images: { url: string }[]; name: string };
-};
-
 const PlaylistPage = ({ params }: { params: { id: string } }) => {
   const searchValue = useSearchParamsValue("searchValue");
   const { data, isLoading } = useOpenLibraryWorks(params.id);
