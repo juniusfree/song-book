@@ -10,14 +10,14 @@ import useSWR from "swr";
 
 const useSpotifyRecommendations = (key: string | null, count: number) => {
   const { openAIKey, spotifyKey } = useCheckIfAuthorized();
-  const getSpotifyRecommendations = ([_url, key, _count, openAI, spotify]: [
+  const getSpotifyRecommendations = ([url, key, _count, openAI, spotify]: [
     string,
     string,
     number,
     string,
     string
   ]) =>
-    fetch("/api/langchain", {
+    fetch(url, {
       method: "POST",
       body: JSON.stringify({
         worksKey: key,
@@ -39,8 +39,8 @@ const useSpotifyRecommendations = (key: string | null, count: number) => {
 };
 
 const useOpenLibraryWorks = (key: string) => {
-  const getOpenLibraryWorks = ([_url, key]: string[]) =>
-    fetch("/api/openLibraryWorks", {
+  const getOpenLibraryWorks = ([url, key]: string[]) =>
+    fetch(url, {
       method: "POST",
       body: JSON.stringify({ key: `works/${key}` }),
     })

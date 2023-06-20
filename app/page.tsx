@@ -23,8 +23,8 @@ const useShowAuth = () => {
 };
 
 const useOpenLibrarySearch = (key?: string | null) => {
-  const getOpenLibrarySearch = ([_url, key]: string[]) =>
-    fetch("/api/openLibrarySearch", {
+  const getOpenLibrarySearch = ([url, key]: string[]) =>
+    fetch(url, {
       method: "POST",
       body: JSON.stringify({ query: key }),
     })
