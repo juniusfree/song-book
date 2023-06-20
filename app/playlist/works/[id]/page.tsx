@@ -9,7 +9,8 @@ import { useState } from "react";
 import useSWR from "swr";
 import { TrackListComponent } from "./trackList";
 
-const useSpotifyRecommendations = (key: string | null, count: number) => {
+const useSpotifyRecommendations = (key: string | null) => {
+  const [refreshCount, setRefreshCount] = useState(0);
   const { openAIKey, spotifyKey } = useCheckIfAuthorized();
   const getSpotifyRecommendations = ([url, key, _count, openAI, spotify]: [
     string,
@@ -30,13 +31,13 @@ const useSpotifyRecommendations = (key: string | null, count: number) => {
       ?.then((res) => res.data);
 
   const { data, error, isLoading, mutate } = useSWR(
-    ["/api/langchain", key, count, openAIKey, spotifyKey],
+    ["/api/langchain", key, refreshCount, openAIKey, spotifyKey],
     getSpotifyRecommendations,
     {
       revalidateOnFocus: false,
     }
   );
-  return { data, error, isLoading, mutate };
+  return { data, error, isLoading, mutate, setRefreshCount };
 };
 
 const useOpenLibraryWorks = (key: string) => {
@@ -66,11 +67,12 @@ const PlaylistPage = ({ params }: { params: { id: string } }) => {
   const cover = covers?.[0];
   const [showMoreDescription, setShowMoreDescription] = useState(false);
 
-  const [refreshCount, setRefreshCount] = useState(0);
   const {
     data: spotifyRecommendations,
     isLoading: isLoadingSpotifyRecommendations,
-  } = useSpotifyRecommendations(params.id, refreshCount);
+    setRefreshCount,
+  } = useSpotifyRecommendations(params.id);
+
   const handleGetSpotifyRecommendations = async () => {
     setRefreshCount((prev) => prev + 1);
   };
