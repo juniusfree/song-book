@@ -1,6 +1,7 @@
 "use client";
 
 import { useCheckIfAuthorized, useSearchParamsValue } from "@/app/hooks";
+import { getBookDescriptionValue } from "@/app/utils";
 import ArrowLeftIcon from "@heroicons/react/20/solid/ArrowLeftIcon";
 import Image from "next/image";
 import Link from "next/link";
@@ -61,8 +62,7 @@ const PlaylistPage = ({ params }: { params: { id: string } }) => {
   const searchValue = useSearchParamsValue("searchValue");
   const { data, isLoading } = useOpenLibraryWorks(params.id);
   const { covers, title, description, subtitle } = data ?? {};
-  const descriptionValue =
-    typeof description === "object" ? description?.value : description;
+  const descriptionValue = getBookDescriptionValue(description);
   const cover = covers?.[0];
   const [showMoreDescription, setShowMoreDescription] = useState(false);
 

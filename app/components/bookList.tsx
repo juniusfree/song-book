@@ -1,3 +1,4 @@
+import { getBookDescriptionValue } from "@/app/utils";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -20,8 +21,7 @@ const BookListComponent = ({
     <ul>
       {books?.map((doc: Book, index: number) => {
         const { covers, title, key, description } = doc;
-        const descriptionValue =
-          typeof description === "object" ? description?.value : description;
+        const descriptionValue = getBookDescriptionValue(description);
         const cover = covers?.[0];
         return (
           <Link key={key} href={`/playlist/${key}?searchValue=${searchValue}`}>

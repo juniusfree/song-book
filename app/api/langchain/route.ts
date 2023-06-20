@@ -2,7 +2,7 @@ import { OpenAI } from "langchain/llms/openai";
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { PromptTemplate } from "langchain/prompts";
 import { NextResponse } from "next/server";
-import { rootURL } from "@/app/utils";
+import { getBookDescriptionValue, rootURL } from "@/app/utils";
 
 const createOpenAIModel = async (key: string) => {
   const { data: openAIApiKey } = await fetch(
@@ -51,12 +51,10 @@ const createThemesPromptTemplate = async ({
   description: string | { value: string };
   subjects: string[];
 }) => {
-  const descriptionValue =
-    typeof description === "string" ? description : description.value;
   const prompt = await themesPromptTemplate
     .format({
       title,
-      description: descriptionValue,
+      description: getBookDescriptionValue(description),
       subjects,
     })
     .then((res) => res);
