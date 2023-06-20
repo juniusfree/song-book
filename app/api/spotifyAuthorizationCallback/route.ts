@@ -8,7 +8,6 @@ export async function GET(req: NextRequest) {
   const clientId = process.env.SPOTIFY_CLIENT_ID;
   const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
   const redirectUri = rootURL + "/api/spotifyAuthorizationCallback";
-  console.log("redirectUri", redirectUri);
 
   if (state === null) {
     return NextResponse.redirect(
