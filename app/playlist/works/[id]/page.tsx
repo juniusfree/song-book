@@ -1,10 +1,9 @@
 "use client";
 
-import { useCheckIfAuthorized } from "@/app/hooks";
+import { useCheckIfAuthorized, useSearchParamsValue } from "@/app/hooks";
 import ArrowLeftIcon from "@heroicons/react/20/solid/ArrowLeftIcon";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
 
@@ -65,8 +64,7 @@ type Track = {
 };
 
 const PlaylistPage = ({ params }: { params: { id: string } }) => {
-  const searchParams = useSearchParams();
-  const searchValue = searchParams.get("searchValue");
+  const searchValue = useSearchParamsValue("searchValue");
   const { data, isLoading } = useOpenLibraryWorks(params.id);
   const { covers, title, description, subtitle } = data ?? {};
   const descriptionValue =

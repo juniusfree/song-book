@@ -2,11 +2,10 @@
 
 import AuthorizationComponent from "@/app/components/authorization";
 import BookListComponentMemoized from "@/app/components/bookList";
-import { useCheckIfAuthorized } from "@/app/hooks";
+import { useCheckIfAuthorized, useSearchParamsValue } from "@/app/hooks";
 import Cog6ToothIcon from "@heroicons/react/20/solid/Cog6ToothIcon";
 import MagnifyingGlassIcon from "@heroicons/react/20/solid/MagnifyingGlassIcon";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
@@ -41,8 +40,7 @@ const useOpenLibrarySearch = (key?: string | null) => {
 const Home = () => {
   const { isAuthorized } = useCheckIfAuthorized();
   const { showAuth, setShowAuth } = useShowAuth();
-  const searchParams = useSearchParams();
-  const searchValue = searchParams.get("searchValue");
+  const searchValue = useSearchParamsValue("searchValue");
   const [searchInput, setSearchInput] = useState<string | null>(searchValue);
   const [openLibrarySearch, setOpenLibrarySearch] = useState<string | null>(
     searchValue ?? ""

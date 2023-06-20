@@ -1,10 +1,9 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParamsValue } from "@/app/hooks";
 
 const SpotifyAuthorizationTokenPage = () => {
-  const searchParams = useSearchParams();
-  const accessToken = searchParams.get("access_token");
+  const accessToken = useSearchParamsValue("access_token");
   if (accessToken) {
     localStorage.setItem("spotify", accessToken as string);
     return <div>Success!</div>;

@@ -1,3 +1,6 @@
+"use client";
+
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export const useCheckIfAuthorized = () => {
@@ -14,4 +17,10 @@ export const useCheckIfAuthorized = () => {
     }
   }, []);
   return { isAuthorized, openAIKey, spotifyKey };
+};
+
+export const useSearchParamsValue = (key: string) => {
+  const searchParams = useSearchParams();
+  const searchValue = searchParams.get(key);
+  return searchValue;
 };
